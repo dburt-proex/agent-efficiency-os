@@ -1,0 +1,61 @@
+policy_id: aeos-tunnel-policy-v0.1
+status: draft
+owner: operator
+fail_closed: true
+
+required_context:
+  - request_id
+  - correlation_id
+  - caller_identity
+  - tool_name
+  - policy_version
+
+classifications:
+  read_only:
+    decision: ALLOW
+    require_post_call_verification: false
+    tools:
+      - aeos.system.health
+
+  mutation:
+    decision: REVIEW
+    require_operator_approval: true
+    require_post_call_verification: true
+    tools: []
+
+  prohibited_v0_1:
+    decision: HALT
+    categories:
+      - credentials
+      - permissions
+      - billing
+      - deployment
+      - deletion
+      - destructive_operation
+      - arbitrary_shell
+      - unrestricted_filesystem
+      - unrestricted_network
+
+unknown_tool:
+  decision: HALT
+  reason_code: TOOL_NOT_REGISTERED
+
+missing_required_context:
+  decision: HALT
+  reason_code: INCOMPLETE_AUTHORIZATION_CONTEXT
+
+receipts:
+  required: true
+  fields:
+    - receipt_id
+    - request_id
+    - correlation_id
+    - timestamp
+    - caller_identity
+    - tool_name
+    - normalized_arguments_hash
+    - policy_id
+    - decision
+    - reason_code
+    - execution_status
+    - verification_status
