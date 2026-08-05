@@ -8,7 +8,7 @@ required_context:
   - correlation_id
   - caller_identity
   - tool_name
-  - policy_version
+  - policy_id
 
 classifications:
   read_only:
