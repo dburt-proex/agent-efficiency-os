@@ -52,9 +52,9 @@ Never commit the API key, tunnel identity, access token, or generated runtime st
 
 ## Configuration
 
-Copy `.env.tunnel.example` to a local ignored environment file and provide the real values outside version control.
+Copy `.env.tunnel.example` to `.env.tunnel.local` (ignored) and provide the real values outside version control.
 
-The initial gateway must expose exactly one canary tool:
+If you use a different filename/location, pass it via `-EnvironmentFile` when running the validator.
 
 ```text
 aeos.system.health
