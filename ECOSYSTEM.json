@@ -1,0 +1,9 @@
+{
+  "registry": "dburt-proex/operator-intelligence:ecosystem/registry.json",
+  "registry_version": "1.0.0",
+  "repository": "dburt-proex/agent-efficiency-os",
+  "classification": "CONSUMER",
+  "authority_for": [],
+  "may_define_new_primitives": false,
+  "consumes": ["instruction_and_capability_control", "signal_scoring_and_intake_routing", "execution_governance_control_plane", "change_time_enforcement", "runtime_tool_enforcement"]
+}
