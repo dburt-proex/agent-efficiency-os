@@ -1,0 +1,30 @@
+name: Validate Ecosystem Classification
+on:
+  pull_request:
+    paths: ["ECOSYSTEM.json", ".github/workflows/validate-ecosystem-classification.yml"]
+  push:
+    branches: [main]
+    paths: ["ECOSYSTEM.json", ".github/workflows/validate-ecosystem-classification.yml"]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Compare local marker to canonical registry
+        env: {GITHUB_REPOSITORY: "${{ github.repository }}"}
+        run: |
+          python - <<'PY'
+          import json,os,urllib.request
+          m=json.load(open('ECOSYSTEM.json'))
+          with urllib.request.urlopen('https://raw.githubusercontent.com/dburt-proex/operator-intelligence/main/ecosystem/registry.json',timeout=15) as r: reg=json.load(r)
+          repo=os.environ['GITHUB_REPOSITORY']; c=next((x for x in reg['repositories'] if x['repo']==repo),None)
+          if not c or m.get('repository')!=repo: raise SystemExit('registry/repository mismatch')
+          for f in ('classification','authority_for','may_define_new_primitives'):
+              if m.get(f)!=c.get(f): raise SystemExit(f'{f} mismatch')
+          if c['classification'] in {'LEGACY','ARCHIVED'}: raise SystemExit(f'{repo} frozen as {c["classification"]}')
+          print(f'PASS: {repo} => {c["classification"]}')
+          PY
